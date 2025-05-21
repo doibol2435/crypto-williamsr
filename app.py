@@ -1,6 +1,7 @@
 ### app.py
-from flask import Flask, render_template, Markup
+from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
+from markupsafe import Markup
 from signal_utils import fetch_ohlcv, calculate_williams_r, detect_signals
 from telegram_utils import send_telegram_message
 from dotenv import load_dotenv
