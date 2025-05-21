@@ -15,7 +15,7 @@ import plotly.graph_objs as go
 load_dotenv()
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
 COINS = [
     "BTCUSDT", "ETHUSDT", "BNBUSDT", "PEPEUSDT", "TURBOUSDT", "WIFUSDT",
@@ -41,7 +41,7 @@ def scan_all_coins():
             try:
                 df = fetch_ohlcv(symbol, interval=INTERVAL)
                 if df.empty or len(df) < 30:
-                    print(f"⚠️ Dữ liệu trống hoặc thiếu cho {symbol}, bỏ qua")
+                    print(f"⚠️ {symbol}: Không đủ dữ liệu, bỏ qua.")
                     continue
 
                 df = calculate_williams_r(df)
