@@ -1,6 +1,8 @@
 flask
 flask_socketio
 gunicorn
-python-dotenv
-pandas
 requests
+pandas
+plotly
+python-dotenv
+markupsafe
