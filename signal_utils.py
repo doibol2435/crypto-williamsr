@@ -1,26 +1,32 @@
 import pandas as pd
 import requests
 
-def fetch_ohlcv(symbol="BTCUSDT", interval="1h", limit=500):
-    url = f"https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}&limit={limit}"
+def fetch_ohlcv(symbol="BTCUSDT", interval="1h", limit=100):
+    # Mapping interval to Bitget's format
+    interval_map = {
+        "1m": "Min1", "5m": "Min5", "15m": "Min15", "30m": "Min30",
+        "1h": "H1", "4h": "H4", "1d": "D1"
+    }
+    bg_interval = interval_map.get(interval, "H1")
+    bg_symbol = symbol.replace("USDT", "_USDTSPBL")
+    url = f"https://api.bitget.com/api/spot/v1/market/candles?symbol={bg_symbol}&period={bg_interval}&limit={limit}"
+
     try:
         response = requests.get(url, timeout=5)
         data = response.json()
-
-        if not data or isinstance(data, dict):
+        candles = data.get("data", [])
+        if not candles:
             return pd.DataFrame()
 
-        df = pd.DataFrame(data, columns=[
-            "time", "open", "high", "low", "close", "volume",
-            "close_time", "quote_asset_volume", "trades", "taker_base", "taker_quote", "ignore"
-        ])
+        df = pd.DataFrame(candles, columns=["time", "open", "high", "low", "close", "volume"])
+        df = df.iloc[::-1]  # reverse to ascending
         df["close"] = df["close"].astype(float)
         df["high"] = df["high"].astype(float)
         df["low"] = df["low"].astype(float)
         df["volume"] = df["volume"].astype(float)
-        return df
+        return df.reset_index(drop=True)
     except Exception as e:
-        print(f"Lỗi khi lấy dữ liệu {symbol}: {e}")
+        print(f"Lỗi khi lấy dữ liệu từ Bitget: {e}")
         return pd.DataFrame()
 
 def calculate_williams_r(df, period=14):
