@@ -6,27 +6,29 @@
   <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
   <script src="/static/script.js" defer></script>
   <style>
-    body { font-family: Arial; padding: 20px; }
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f8f8f8; }
     .signal-card {
       border: 1px solid #ccc; border-radius: 8px; padding: 10px;
-      margin-bottom: 15px; width: 300px;
+      margin-bottom: 15px; width: 300px; background: #fff;
+      box-shadow: 1px 1px 4px rgba(0,0,0,0.05);
     }
-    .long { background: #e0ffe0; }
-    .short { background: #ffe0e0; }
+    .long { background: #e0ffe0; border-left: 6px solid #32cd32; }
+    .short { background: #ffe0e0; border-left: 6px solid #ff4d4d; }
+    #signal-container { display: flex; flex-wrap: wrap; gap: 20px; }
   </style>
 </head>
 <body>
   <h2>📈 Tín hiệu Williams %R (Real-Time)</h2>
   <div id="signal-container">
     {% for coin, signal in signals.items() %}
-    <div class="signal-card {{ signal.signal|lower if signal.signal }}">
-      <b>{{ coin }}</b><br>
-      Tín hiệu: {{ signal.signal or "Không có" }}<br>
-      %R: {{ signal.williams_r }}<br>
-      Entry: {{ signal.entry }}<br>
-      TP: {{ signal.tp }}<br>
-      SL: {{ signal.sl }}
-    </div>
+      <div class="signal-card {{ signal.signal|lower if signal.signal }}">
+        <b>{{ coin }}</b><br>
+        Tín hiệu: {{ signal.signal or "Không có" }}<br>
+        %R: {{ signal.williams_r }}<br>
+        Entry: {{ signal.entry }}<br>
+        TP: {{ signal.tp }}<br>
+        SL: {{ signal.sl }}
+      </div>
     {% endfor %}
   </div>
 </body>

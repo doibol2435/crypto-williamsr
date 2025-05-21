@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Thống kê hiệu suất</title>
+  <style>
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background-color: #f2f2f2; }
+    .long { background-color: #e0ffe0; }
+    .short { background-color: #ffe0e0; }
+    .waiting { color: #888; }
+    .hit { color: green; font-weight: bold; }
+    .fail { color: red; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>📊 Thống kê tín hiệu giao dịch</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Thời gian</th>
+        <th>Coin</th>
+        <th>Tín hiệu</th>
+        <th>Entry</th>
+        <th>TP</th>
+        <th>SL</th>
+        <th>%R</th>
+        <th>Trạng thái</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr class="{{ row.signal|lower }}">
+        <td>{{ row.time }}</td>
+        <td>{{ row.symbol }}</td>
+        <td>{{ row.signal }}</td>
+        <td>{{ row.entry }}</td>
+        <td>{{ row.tp }}</td>
+        <td>{{ row.sl }}</td>
+        <td>{{ row.williams_r }}</td>
+        <td class="{% if row.status == 'hit' %}hit{% elif row.status == 'fail' %}fail{% else %}waiting{% endif %}">{{ row.status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
