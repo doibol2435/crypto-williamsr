@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: crypto-williamsr
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:gunicorn_app"
+    autoDeploy: true
+    branch: main
+    plan: free
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: CHAT_ID
+        sync: false

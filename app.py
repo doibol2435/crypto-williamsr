@@ -39,6 +39,10 @@ def scan_all_coins():
         for symbol in COINS:
             try:
                 df = fetch_ohlcv(symbol, interval=INTERVAL)
+                if df.empty or len(df) < 30:
+                    print(f"⚠️ Dữ liệu trống hoặc thiếu cho {symbol}, bỏ qua")
+                    continue
+
                 df = calculate_williams_r(df)
                 signal = detect_signals(df)
                 temp_signals[symbol] = signal
