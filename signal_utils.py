@@ -1,13 +1,13 @@
 import pandas as pd
 import requests
 
-def fetch_ohlcv(symbol="BTCUSDT", interval="1h", limit=100):
+def fetch_ohlcv(symbol="BTCUSDT", interval="1h", limit=500):
     url = f"https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}&limit={limit}"
     try:
         response = requests.get(url, timeout=5)
         data = response.json()
 
-        if not data or isinstance(data, dict):  # dict nếu lỗi API hoặc empty list
+        if not data or isinstance(data, dict):
             return pd.DataFrame()
 
         df = pd.DataFrame(data, columns=[
@@ -33,6 +33,7 @@ def calculate_williams_r(df, period=14):
     return df
 
 def detect_signals(df):
+    df = df.dropna().copy()
     if df.empty or len(df) < 30:
         return {"signal": None, "entry": None, "tp": None, "sl": None, "williams_r": None}
 
