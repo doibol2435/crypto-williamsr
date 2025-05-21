@@ -41,10 +41,14 @@ def scan_all_coins():
             try:
                 df = fetch_ohlcv(symbol, interval=INTERVAL)
                 if df.empty or len(df) < 30:
-                    print(f"⚠️ {symbol}: Không đủ dữ liệu, bỏ qua.")
+                    print(f"⚠️ {symbol}: Không đủ dữ liệu đầu vào, bỏ qua.")
                     continue
 
                 df = calculate_williams_r(df)
+                if df.empty or df['williams_r'].isnull().all():
+                    print(f"⚠️ {symbol}: Dữ liệu %R không hợp lệ, bỏ qua.")
+                    continue
+
                 signal = detect_signals(df)
                 temp_signals[symbol] = signal
 
@@ -68,9 +72,10 @@ def scan_all_coins():
 
 def get_current_price(symbol):
     try:
-        url = f"https://api.binance.com/api/v3/ticker/price?symbol={symbol}"
+        symbol_bg = symbol.replace("USDT", "_USDTSPBL")
+        url = f"https://api.bitget.com/api/spot/v1/market/ticker?symbol={symbol_bg}"
         res = requests.get(url, timeout=5).json()
-        return float(res["price"])
+        return float(res["data"]["close"])
     except:
         return None
 
